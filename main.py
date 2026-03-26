@@ -5,8 +5,16 @@ import numpy as np
 from pypdf import PdfReader
 from transformers import pipeline
 import re
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Load embedding model
 model = SentenceTransformer('all-MiniLM-L6-v2')

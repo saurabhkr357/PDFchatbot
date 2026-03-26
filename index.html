@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Chatbot</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f5f5f5;
+            text-align: center;
+        }
+
+        #chatbox {
+            width: 60%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+            border-radius: 10px;
+        }
+
+        .user {
+            text-align: right;
+            color: blue;
+            margin: 10px;
+        }
+
+        .bot {
+            text-align: left;
+            color: green;
+            margin: 10px;
+        }
+
+        input {
+            width: 50%;
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>📄 PDF AI Chatbot</h2>
+
+<input type="file" id="fileInput">
+<button onclick="uploadPDF()">Upload PDF</button>
+
+<div id="chatbox"></div>
+
+<br>
+
+<input type="text" id="question" placeholder="Ask a question...">
+<button onclick="askQuestion()">Send</button>
+
+<script>
+
+async function uploadPDF() {
+    let file = document.getElementById("fileInput").files[0];
+    let formData = new FormData();
+    formData.append("file", file);
+
+    await fetch("http://127.0.0.1:8000/upload", {
+        method: "POST",
+        body: formData
+    });
+
+    alert("PDF uploaded!");
+}
+
+async function askQuestion() {
+    let question = document.getElementById("question").value;
+
+    document.getElementById("chatbox").innerHTML +=
+        `<div class="user">${question}</div>`;
+
+    let response = await fetch(`http://127.0.0.1:8000/ask?query=${question}`);
+    let data = await response.json();
+
+    document.getElementById("chatbox").innerHTML +=
+        `<div class="bot">${data.answer}</div>`;
+}
+
+</script>
+
+</body>
+</html>
